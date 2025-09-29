@@ -450,7 +450,7 @@ export class Viewport3d implements ViewportDelegate {
     });
 
     // highlight selected tile
-    if (this.selectedTile) {
+    if (false && this.selectedTile) {
       this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
       this.selectedTileMesh.position.y = -0.49;
       this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;

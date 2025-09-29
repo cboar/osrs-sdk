@@ -9,7 +9,7 @@ import { Model } from "./Model";
 import { drawLineNormally, drawLineOnTop } from "./RenderUtils";
 
 const OUTLINE_NORMAL = 0xffffff;
-const OUTLINE_TRUE_TILE = 0x00ffff;
+const OUTLINE_TRUE_TILE = 0xff7f00;
 const OUTLINE_SELECTED = 0xff0000;
 
 // global loader across models
@@ -92,6 +92,7 @@ export class GLTFModel implements Model, RenderableListener {
 
     this.outlineMaterial = new THREE.LineBasicMaterial({
       color: OUTLINE_NORMAL,
+      linewidth: 2,
     });
     const points = [
       new THREE.Vector3(0, 0, 0),
@@ -111,6 +112,7 @@ export class GLTFModel implements Model, RenderableListener {
       trueTileGeometry,
       new THREE.LineBasicMaterial({
         color: OUTLINE_TRUE_TILE,
+        linewidth: 2,
       }),
     );
     this.trueTile.visible = renderable.drawTrueTile;

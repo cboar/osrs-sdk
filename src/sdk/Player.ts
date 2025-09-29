@@ -1017,7 +1017,7 @@ export class Player extends Unit {
 }
 
 class ClickMarker extends TileMarker {
-  constructor(region: Region, location: Location, color = "#FFFFFF") {
+  constructor(region: Region, location: Location, color = "#AAAAAA") {
     super(region, location, color, 1, false);
   }
   remove() {

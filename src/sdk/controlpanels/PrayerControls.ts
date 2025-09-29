@@ -22,15 +22,21 @@ export class PrayerControls extends BaseControls {
 
   deactivateAllPrayers() {
     this.hasQuickPrayersActivated = false;
-    Trainer.player.prayerController.activePrayers().forEach((prayer) => prayer.deactivate());
+    Trainer.player.prayerController.prayers.forEach((prayer) => {
+      if (!prayer) return;
+      if (prayer.name === "Protect from Magic") {
+        prayer.deactivate();
+      }
+      if (prayer.name === "Rigour") {
+        prayer.deactivate();
+      }
+    });
   }
 
   activateQuickPrayers() {
     this.hasQuickPrayersActivated = true;
-
     Trainer.player.prayerController.prayers.forEach((prayer) => {
       if (!prayer) return;
-      prayer.deactivate();
       if (prayer.name === "Protect from Magic") {
         prayer.activate(Trainer.player);
       }

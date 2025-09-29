@@ -45,6 +45,7 @@ export class InventoryControls extends BaseControls {
   }
 
   cursorMovedto(x: number, y: number) {
+    if (!this.clickedDownLocation) return;
     this.cursorLocation = { x, y };
     this.draggedItem ||= Pathing.dist(this.cursorLocation.x, this.cursorLocation.y, this.clickedDownLocation.x, this.clickedDownLocation.y) > DRAG_RADIUS && this.canDrag();
   }

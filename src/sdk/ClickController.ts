@@ -96,6 +96,7 @@ export class ClickController {
     }
     const world = Trainer.player.region.world;
     const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
+    Viewport.viewport.contextMenu.tooltip = null;
     this.recentlySelectedMobs.forEach((mob) => {
       mob.selected = false;
     });
@@ -104,6 +105,9 @@ export class ClickController {
       const firstMob = hoveredOn.mobs.find(() => true);
       if (firstMob) {
         firstMob.selected = true;
+        const region = Trainer.player.region;
+        const actionText = firstMob.contextActions(region, 0, 0)[0].text;
+        Viewport.viewport.contextMenu.tooltip = { text: actionText, x: e.clientX, y: e.clientY };
         this.recentlySelectedMobs.push(firstMob);
       }
     }
@@ -191,6 +195,8 @@ export class ClickController {
       inputController.queueAction(() => player.setSeekingItem(groundItems[0]));
     } else if (x !== null && y !== null) {
       this.yellowClick();
+      Trainer.player.pathTargetLocation = { x: Math.floor(x), y: Math.floor(y) };
+      Trainer.player.updatePathMarker();
       inputController.queueAction(() => this.playerWalkClick(x, y));
     }
     Viewport.viewport.contextMenu.setInactive();

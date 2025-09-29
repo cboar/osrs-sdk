@@ -77,7 +77,6 @@ export class Viewport {
   width: number;
   height: number;
 
-
   public components: Component[] = [];
 
   constructor(private delegate: ViewportDelegate) {}

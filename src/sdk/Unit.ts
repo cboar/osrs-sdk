@@ -231,6 +231,10 @@ export abstract class Unit extends Renderable {
     // Override me
   }
 
+  get outlineRenderOrder(): number | null {
+    return 1000;
+  }
+
   attackStep() {
     // Override me, called after all movement has been resolved
     this.nulledTicks--;
