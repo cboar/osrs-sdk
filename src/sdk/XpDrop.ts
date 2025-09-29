@@ -5,8 +5,10 @@ export interface XpDropAggregator {
 export class XpDrop {
   skill: string;
   xp: number;
-  constructor(skill: string, xp: number) {
+  dmg: number;
+  constructor(skill: string, xp: number, dmg: number = 0) {
     this.skill = skill;
     this.xp = xp;
+	this.dmg = dmg;
   }
 }

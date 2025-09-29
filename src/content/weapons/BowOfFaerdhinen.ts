@@ -13,6 +13,8 @@ import { Sound } from "../../sdk/utils/SoundCache";
 import BofaAttackSound from "../../assets/sounds/crystal_bow_1352.ogg";
 
 export class BowOfFaerdhinen extends RangedWeapon {
+  spriteSize = { w: 29, h: 30 }
+
   constructor() {
     super();
     this.bonuses = {

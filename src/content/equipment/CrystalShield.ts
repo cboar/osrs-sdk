@@ -5,6 +5,7 @@ import { ItemName } from "../../sdk/ItemName";
 
 export class CrystalShield extends Offhand {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+  spriteSize = { w: 31, h: 31 };
 
   get inventoryImage() {
     return InventImage;

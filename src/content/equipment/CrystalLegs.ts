@@ -6,6 +6,7 @@ import { Assets } from "../../sdk/utils/Assets";
 
 export class CrystalLegs extends Legs {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+  spriteSize = { w: 12, h: 26 };
 
   get inventoryImage() {
     return InventImage;

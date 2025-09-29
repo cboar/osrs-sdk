@@ -6,6 +6,7 @@ import { Assets } from "../../sdk/utils/Assets";
 
 export class BarrowsGloves extends Gloves {
   inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
+  spriteSize = { w: 31, h: 31 };
 
   get inventoryImage() {
     return InventImage;

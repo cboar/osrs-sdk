@@ -5,6 +5,7 @@ import { Player } from "./Player";
 export class Item {
   groundLocation: Location;
   inventorySprite: HTMLImageElement;
+  spriteSize?: { w: number, h: number };
   selected: boolean;
   defaultAction = "Use";
   _serialNumber: string;

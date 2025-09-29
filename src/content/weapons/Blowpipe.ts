@@ -16,6 +16,8 @@ import { PlayerAnimationIndices } from "../../sdk/rendering/GLTFAnimationConstan
 import { Assets } from "../../sdk/utils/Assets";
 
 export class Blowpipe extends RangedWeapon {
+  spriteSize = { w: 31, h: 30 };
+
   constructor() {
     super({
       modelScale: 1 / 128,

@@ -29,6 +29,7 @@ export class PrayerControls extends BaseControls {
     this.hasQuickPrayersActivated = true;
 
     Trainer.player.prayerController.prayers.forEach((prayer) => {
+      if (!prayer) return;
       prayer.deactivate();
       if (prayer.name === "Protect from Magic") {
         prayer.activate(Trainer.player);
@@ -68,10 +69,11 @@ export class PrayerControls extends BaseControls {
     const scale = Settings.controlPanelScale;
 
     Trainer.player.prayerController.prayers.forEach((prayer, index) => {
+      if (!prayer) return;
       const x2 = index % 5;
       const y2 = Math.floor(index / 5);
 
-      if (prayer.isActive || prayer.isLit) {
+      if (prayer.isLit) {
         context.beginPath();
         context.fillStyle = "#D1BB7773";
         context.arc(

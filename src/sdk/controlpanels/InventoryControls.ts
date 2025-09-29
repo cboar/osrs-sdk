@@ -213,24 +213,29 @@ export class InventoryControls extends BaseControls {
         // Viewport.viewport.context.fillRect(itemX, itemY, 32, 32)
         const sprite = inventoryItem.inventorySprite;
 
-        const xOff = Math.floor((32 - sprite.width) / 2);
-        const yOff = Math.floor((32 - sprite.height) / 2);
+        let itemWidth = sprite.width;
+        let itemHeight = sprite.height;
+        if (inventoryItem.spriteSize) {
+          ({ w: itemWidth, h: itemHeight } = inventoryItem.spriteSize);
+        }
+        const xOff = Math.floor((32 - itemWidth) / 2);
+        const yOff = Math.floor((32 - itemHeight) / 2);
         if (inventoryItem === this.clickedDownItem) {
           context.globalAlpha = 0.4;
           if (this.draggedItem) {
             context.drawImage(
               sprite,
-              x + this.cursorLocation.x - (sprite.width * scale) / 2,
-              y + this.cursorLocation.y - (sprite.height * scale) / 2,
-              sprite.width * scale,
-              sprite.height * scale,
+              x + this.cursorLocation.x - (itemWidth * scale) / 2,
+              y + this.cursorLocation.y - (itemHeight * scale) / 2,
+              itemWidth * scale,
+              itemHeight * scale,
             );
           } else {
-            context.drawImage(sprite, itemX + xOff, itemY + yOff, sprite.width * scale, sprite.height * scale);
+            context.drawImage(sprite, itemX + xOff, itemY + yOff, itemWidth * scale, itemHeight * scale);
           }
           context.globalAlpha = 1;
         } else {
-          context.drawImage(sprite, itemX + xOff, itemY + yOff, sprite.width * scale, sprite.height * scale);
+          context.drawImage(sprite, itemX + xOff, itemY + yOff, itemWidth * scale, itemHeight * scale);
         }
 
         if (inventoryItem.selected) {

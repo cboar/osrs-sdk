@@ -84,7 +84,7 @@ export class XpDropController {
 
     const skillInfo = find(XpDropController.skills, { type: this.lastDropSkill });
 
-    if (skillInfo && skillInfo.type) {
+    if (false && skillInfo && skillInfo.type) {
       // Draw overall XP box at top
       this.ctx.lineWidth = 1;
       this.ctx.strokeStyle = XpDropController.outlineColor;
@@ -112,7 +112,7 @@ export class XpDropController {
     }
 
     const xpDropYOffset = 85;
-    const dropFontSize = Math.floor(16 * (Settings.maxUiScale * 2));
+    const dropFontSize = Math.floor(16 * Settings.maxUiScale);
     this.ctx.fillStyle = "#FFFFFF";
     this.ctx.font = `${dropFontSize}px Stats_11`;
     this.ctx.textAlign = "right";
@@ -127,16 +127,19 @@ export class XpDropController {
       if (skillInfo.image) {
         this.ctx.drawImage(
           skillInfo.image,
-          110 - this.ctx.measureText(String(drop.xp)).width - 20,
-          (index - tickPercent) * textSize - 13 + xpDropYOffset,
-          16,
-          16,
-        ),
-          skillInfo.image.width * Settings.maxUiScale * 2,
-          skillInfo.image.height * Settings.maxUiScale * 2;
+          80 - this.ctx.measureText(String(drop.xp)).width - 28,
+          (index - tickPercent) * textSize - 21 + xpDropYOffset,
+          24,
+          24,
+          // skillInfo.image.width * Settings.maxUiScale * 2,
+          // skillInfo.image.height * Settings.maxUiScale * 2,
+        );
       }
 
-      this.ctx.fillText(String(drop.xp), 110, (index - tickPercent) * textSize + xpDropYOffset);
+      this.ctx.fillText(String(drop.xp), 80, (index - tickPercent) * textSize + xpDropYOffset);
+	  this.ctx.fillStyle = "#FF0000";
+      this.ctx.fillText(` (${drop.dmg})`, 120, (index - tickPercent) * textSize + xpDropYOffset);
+	  this.ctx.fillStyle = "#FFFFFF";
     });
     destinationCanvas.drawImage(this.canvas, x, y);
   }

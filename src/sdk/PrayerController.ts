@@ -43,30 +43,9 @@ export class PrayerController {
 
   tick(player: Player) {
     // "transfer" prayers from client to "server"
-    this.prayers.forEach((prayer) => prayer.tick());
-
-    // Deactivate any incompatible prayers
-    const conflictingPrayers = {};
-    player.prayerController.prayers.filter(it => it.isActive).forEach((activePrayer) => {
-      activePrayer.groups.forEach((group) => {
-        if (!conflictingPrayers[group]) {
-          conflictingPrayers[group] = [];
-        }
-        conflictingPrayers[group].push(activePrayer);
-      });
-    });
-
-    for (const prayer in conflictingPrayers) {
-      conflictingPrayers[prayer].sort((p1: BasePrayer, p2: BasePrayer) => p2.lastActivated - p1.lastActivated);
-      conflictingPrayers[prayer].shift();
-      conflictingPrayers[prayer].forEach((prayer: BasePrayer) => {
-        prayer.isLit = false;
-        prayer.isActive = false;
-      });
-    }
+    this.prayers.forEach((prayer) => prayer?.tick());
 
     // calc prayer drain
-
     const prayerDrainThisTick = this.drainRate();
     this.drainCounter += prayerDrainThisTick;
     while (this.drainCounter > this.player.prayerDrainResistance) {
@@ -75,7 +54,6 @@ export class PrayerController {
     }
 
     // deactivate prayers when out of prayer
-
     if (this.player.currentStats.prayer <= 0) {
       this.deactivateAll(player);
     }
@@ -105,7 +83,7 @@ export class PrayerController {
   }
 
   findPrayerByName(name: string): BasePrayer {
-    return find(this.prayers, (prayer: BasePrayer) => prayer.name === name);
+    return find(this.prayers, (prayer: BasePrayer) => prayer?.name === name);
   }
 
   isPrayerActiveByName(name: string): BasePrayer {
@@ -113,7 +91,7 @@ export class PrayerController {
   }
 
   activePrayers(): BasePrayer[] {
-    return filter(this.prayers, (prayer: BasePrayer) => prayer.isActive);
+    return filter(this.prayers, (prayer: BasePrayer) => prayer?.isActive);
   }
 
   matchFeature(feature: string): BasePrayer {
@@ -131,35 +109,26 @@ export class PrayerController {
     ) as BasePrayer;
   }
 
-  prayers: BasePrayer[] = [
-    new ThickSkin(),
-    new BurstOfStrength(),
-    new ClarityOfThought(),
-    new SharpEye(),
-    new MysticWill(),
-    new RockSkin(),
-    new SuperhumanStrength(),
-    new ImprovedReflexes(),
-    new RapidRestore(),
-    new RapidHeal(),
-    new ProtectItem(),
-    new HawkEye(),
-    new MysticLore(),
-    new SteelSkin(),
-    new UltimateStrength(),
-    new IncredibleReflexes(),
+  prayers: (BasePrayer | null)[] = [
     new ProtectMage(),
     new ProtectRange(),
     new ProtectMelee(),
-    new EagleEye(),
-    new MysticMight(),
-    new Retribution(),
-    new Redemption(),
-    new Smite(),
-    new Preserve(),
-    new Chivalry(),
-    new Piety(),
-    new Rigour(),
+    null,
+    new ProtectItem(),
+    null,
+    null,
+    null,
+    null,
+    new RapidHeal(),
     new Augury(),
-  ];
+    new Rigour(),
+    new Piety(),
+    null,
+    new Redemption(),
+    null,
+    null,
+    null,
+    null,
+    new Smite(),
+  ]
 }

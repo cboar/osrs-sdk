@@ -64,6 +64,7 @@ export class Player extends Unit {
   stats: PlayerStats;
   currentStats: PlayerStats;
   xpDrops: XpDropAggregator;
+  dmgDrops: XpDropAggregator;
   overhead: BasePrayer;
   running = true;
   cachedBonuses: UnitBonuses = null;
@@ -292,13 +293,18 @@ export class Player extends Unit {
 
   clearXpDrops() {
     this.xpDrops = {};
+    this.dmgDrops = {};
   }
 
   grantXp(xpDrop: XpDrop) {
     if (!this.xpDrops[xpDrop.skill]) {
       this.xpDrops[xpDrop.skill] = 0;
     }
+    if (!this.dmgDrops[xpDrop.skill]) {
+      this.dmgDrops[xpDrop.skill] = 0;
+    }
     this.xpDrops[xpDrop.skill] += xpDrop.xp;
+    this.dmgDrops[xpDrop.skill] += xpDrop.dmg;
   }
 
   sendXpToController() {
@@ -313,6 +319,7 @@ export class Player extends Unit {
       XpDropController.controller.registerXpDrop({
         skill,
         xp: Math.ceil(this.xpDrops[skill]),
+        dmg: Math.ceil(this.dmgDrops[skill]),
       });
     });
 
@@ -401,13 +408,14 @@ export class Player extends Unit {
   }
 
   activatePrayers() {
-    this.lastOverhead = this.overhead;
     this.overhead = this.prayerController.overhead();
-    if (this.lastOverhead && !this.overhead) {
-      this.lastOverhead.playOffSound();
-    } else if (this.lastOverhead !== this.overhead) {
-      this.overhead.playOnSound();
-    }
+    this.prayerController.prayers.forEach(prayer => {
+      if (!prayer) return;
+      if (prayer.willPlayOffSound) prayer.playOffSound();
+      if (prayer.willPlayOnSound) prayer.playOnSound();
+      prayer.willPlayOffSound = false;
+      prayer.willPlayOnSound = false;
+    })
   }
 
   setAggro(mob: Unit) {
