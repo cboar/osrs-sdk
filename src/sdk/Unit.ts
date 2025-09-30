@@ -231,7 +231,7 @@ export abstract class Unit extends Renderable {
     // Override me
   }
 
-  get outlineRenderOrder(): number | null {
+  get trueTileRenderOrder(): number | null {
     return 1000;
   }
 
@@ -608,6 +608,13 @@ export abstract class Unit extends Renderable {
       this.removedFromWorld();
     }
   }
+  
+  get incomingDamage(): number {
+    return this.incomingProjectiles.reduce((acc, projectile) => {
+      if (projectile.shouldDestroy()) return acc;
+      return acc + projectile.damage;
+    }, 0)
+  }
 
   processIncomingAttacks() {
     this.lastHitAgo++;
@@ -713,6 +720,9 @@ export abstract class Unit extends Renderable {
   }
 
   drawHPBar(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    if (this.lastHitAgo > 12) {
+      return;
+    }
     context.fillStyle = "red";
     context.fillRect((-this.size / 2) * scale, -(this.size / 2) * scale, scale * this.size, 5);
 

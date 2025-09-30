@@ -1004,7 +1004,7 @@ export class Player extends Unit {
   }
 
   override get drawTrueTile() {
-    return true;
+    return "#FF7F00";
   }
 
   override get trueTileRenderOrder() {

@@ -450,12 +450,12 @@ export class Viewport3d implements ViewportDelegate {
     });
 
     // highlight selected tile
-    if (false && this.selectedTile) {
-      this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
-      this.selectedTileMesh.position.y = -0.49;
-      this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;
-      this.selectedTileMesh.visible = !Trainer.clickController.hasSelectedMob();
-    }
+    // if (this.selectedTile) {
+    //   this.selectedTileMesh.position.x = this.selectedTile.x - 0.5;
+    //   this.selectedTileMesh.position.y = -0.49;
+    //   this.selectedTileMesh.position.z = this.selectedTile.y - 0.5;
+    //   this.selectedTileMesh.visible = !Trainer.clickController.hasSelectedMob();
+    // }
   }
 
   draw2dScene(world: World, region: Region) {
@@ -463,14 +463,14 @@ export class Viewport3d implements ViewportDelegate {
     this.uiCanvasContext.clearRect(0, 0, this.uiCanvas.width, this.uiCanvas.height);
     const translator = (pos: Location, z = 0) => this.projectToScreen(new THREE.Vector3(pos.x, z, pos.y));
 
-    const get2dOffset = (r: Renderable) => {
+    const get2dOffset = (r: Renderable, heightScale = 1) => {
       const perceivedLocation = r.getPerceivedLocation(world.tickPercent);
       const { x, y } = translator(
         {
           x: perceivedLocation.x + r.size / 2,
           y: perceivedLocation.y - r.size / 2,
         },
-        r.height,
+        r.height * heightScale,
       );
       return { x, y };
     };
@@ -479,7 +479,7 @@ export class Viewport3d implements ViewportDelegate {
     const renderables: Renderable[] = (units as Renderable[]).concat(region.entities);
 
     renderables.forEach((r) => {
-      r.drawUILayer(world.tickPercent, get2dOffset(r), this.uiCanvasContext, SPRITE_SCALE, false);
+      r.drawUILayer(world.tickPercent, get2dOffset(r), this.uiCanvasContext, SPRITE_SCALE, false, get2dOffset);
     });
   }
 

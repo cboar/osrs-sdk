@@ -26,6 +26,8 @@ export class CanvasSpriteModel implements Model {
   private outline: THREE.LineSegments;
   private outlineMaterial: THREE.LineBasicMaterial;
 
+  private trueTile: THREE.LineSegments;
+
   constructor(private renderable: Renderable) {
     const { size } = renderable;
     this.canvas = new OffscreenCanvas(size * CANVAS_TILE_SIZE, size * CANVAS_TILE_SIZE);
@@ -62,6 +64,17 @@ export class CanvasSpriteModel implements Model {
     ];
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     this.outline = new THREE.LineSegments(geometry, this.outlineMaterial);
+    this.outline.visible = renderable.drawOutline;
+
+    const trueTileGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    this.trueTile = new THREE.LineSegments(
+      trueTileGeometry,
+      new THREE.LineBasicMaterial({
+        color: renderable.drawTrueTile || "#FFFFFF",
+        linewidth: 2,
+      }),
+    );
+    this.trueTile.visible = !!renderable.drawTrueTile;
   }
 
   draw(
@@ -76,6 +89,7 @@ export class CanvasSpriteModel implements Model {
     if (this.sprite.parent !== scene) {
       scene.add(this.sprite);
       scene.add(this.outline);
+      scene.add(this.trueTile);
     }
     const size = this.renderable.size;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -95,7 +109,7 @@ export class CanvasSpriteModel implements Model {
       drawLineNormally(this.outline);
     }
     this.sprite.visible = visible;
-    this.outline.visible = visible;
+    this.outline.visible = this.renderable.drawOutline && visible;
 
     const { x, y } = location;
     this.outline.position.x = x;
@@ -104,12 +118,32 @@ export class CanvasSpriteModel implements Model {
     this.sprite.position.x = x + size / 2;
     this.sprite.position.y = -0.5;
     this.sprite.position.z = y - size / 2;
+
+    if (this.renderable.drawTrueTile) {
+      const { x: trueX, y: trueY } = this.renderable.getTrueLocation();
+      if (this.renderable.drawTrueTile !== (this.trueTile.material as THREE.Material).blendColor.getHexString()) {
+        this.trueTile.material = new THREE.LineBasicMaterial({
+          color: this.renderable.drawTrueTile,
+          linewidth: 2,
+        });
+      }
+      this.trueTile.position.x = trueX;
+      this.trueTile.position.y = -0.495;
+      this.trueTile.position.z = trueY;
+      if (this.renderable.trueTileRenderOrder !== null) {
+        drawLineOnTop(this.trueTile, this.renderable.trueTileRenderOrder ?? 1000);
+      } else {
+        drawLineNormally(this.trueTile);
+      }
+    }
+    this.trueTile.visible = this.renderable.drawTrueTile && visible;
   }
 
   destroy(scene: THREE.Scene) {
     if (this.sprite.parent === scene) {
       scene.remove(this.sprite);
       scene.remove(this.outline);
+      scene.remove(this.trueTile);
     }
   }
 

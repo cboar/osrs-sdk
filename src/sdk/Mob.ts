@@ -17,6 +17,7 @@ import { InputController } from "./Input";
 import { parseText } from "./utils/Text";
 import { UnitStats } from "./UnitStats";
 import { Trainer } from "./Trainer";
+import { Renderable } from "./Renderable";
 
 export enum AttackIndicators {
   NONE = 0,
@@ -45,6 +46,16 @@ export class Mob extends Unit {
 
   constructor(region: Region, location: Location, options?: UnitOptions) {
     super(region, location, options);
+  }
+  
+  override get drawOutline() {
+    return false;
+  }
+  
+  override get drawTrueTile() {
+    const hp = Math.max(0, this.currentStats.hitpoint - this.incomingDamage);
+    if (hp > 0) return "#00FF00";
+    return "#FF0000";
   }
 
   override get type() {
@@ -533,8 +544,24 @@ export class Mob extends Unit {
     });*/
   }
 
-  override drawUILayer(tickPercent, offset, context, scale, hitsplatsAbove) {
+  override drawUILayer(
+    tickPercent: number,
+    offset: Location,
+    context: OffscreenCanvasRenderingContext2D,
+    scale: number,
+    hitsplatsAbove = true,
+    get2dOffset?: ((r: Renderable, scale: number) => {x: number, y:number}),
+  ) {
     context.save();
+
+    const middleOffset = get2dOffset(this, 0.5);
+    const hp = Math.max(0, this.currentStats.hitpoint - this.incomingDamage);
+    context.font = "24px OSRS";
+    context.fillStyle = "#000000";
+    context.fillText(String(hp), middleOffset.x + 2, middleOffset.y + 2);
+    context.fillStyle = hp > 0 ? "#00FF00" : "#FF0000";
+    context.fillText(String(hp), middleOffset.x, middleOffset.y);
+
     context.translate(offset.x, offset.y);
     if (Settings.rotated === "south") {
       context.rotate(Math.PI);

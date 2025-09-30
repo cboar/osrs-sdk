@@ -111,11 +111,11 @@ export class GLTFModel implements Model, RenderableListener {
     this.trueTile = new THREE.LineSegments(
       trueTileGeometry,
       new THREE.LineBasicMaterial({
-        color: OUTLINE_TRUE_TILE,
+        color: renderable.drawTrueTile || OUTLINE_TRUE_TILE,
         linewidth: 2,
       }),
     );
-    this.trueTile.visible = renderable.drawTrueTile;
+    this.trueTile.visible = !!renderable.drawTrueTile;
 
     const hullMaterial = new THREE.MeshBasicMaterial({ color: 0x00000000 });
     hullMaterial.transparent = true;
@@ -331,6 +331,12 @@ export class GLTFModel implements Model, RenderableListener {
      this.outline.visible = this.renderable.drawOutline && visible;
     if (this.renderable.drawTrueTile) {
       const { x: trueX, y: trueY } = this.renderable.getTrueLocation();
+      if (this.renderable.drawTrueTile !== (this.trueTile.material as THREE.Material).blendColor.getHexString()) {
+        this.trueTile.material = new THREE.LineBasicMaterial({
+          color: this.renderable.drawTrueTile,
+          linewidth: 2,
+        });
+      }
       this.trueTile.position.x = trueX;
       this.trueTile.position.y = -0.495;
       this.trueTile.position.z = trueY;

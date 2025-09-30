@@ -55,8 +55,8 @@ export abstract class Renderable {
     return null;
   }
 
-  get drawTrueTile(): boolean {
-    return false;
+  get drawTrueTile(): string | null {
+    return null;
   }
 
   // If null, render normally in the scene. Otherwise sets the renderOrder which can
@@ -110,6 +110,7 @@ export abstract class Renderable {
     context: OffscreenCanvasRenderingContext2D,
     scale: number,
     hitsplatAbove = true,
+    get2dOffset?: ((r: Renderable, scale: number) => {x: number, y:number}),
   ) {
     // Override me
   }
