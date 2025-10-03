@@ -63,7 +63,7 @@ export class Mob extends Unit {
   }
 
   canBeAttacked() {
-    return true;
+    return this.dying === -1;
   }
 
   override setStats() {
@@ -554,7 +554,7 @@ export class Mob extends Unit {
   ) {
     context.save();
 
-    const middleOffset = get2dOffset(this, 0.5);
+    const middleOffset = get2dOffset?.(this, 0.5) ?? offset;
     const hp = Math.max(0, this.currentStats.hitpoint - this.incomingDamage);
     context.font = "24px OSRS";
     context.fillStyle = "#000000";

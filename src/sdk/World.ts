@@ -30,6 +30,7 @@ export class World {
   frameCount = 0;
   tickTimer = 0;
   clientTickTimer = 0;
+  baseTime = 0;
 
   clientTickHandle: ReturnType<typeof setTimeout> | null = null;
 
@@ -80,8 +81,9 @@ export class World {
       return;
     }
     const elapsed = now - this.then;
-    const tickElapsed = now - this.tickTimer;
-    if (tickElapsed >= 600) {
+    if (!this.baseTime) this.baseTime = now;
+    if (now > this.baseTime) {
+      this.baseTime += Settings.tickMs;
       this.tickTimer = now;
       if (this.getReadyTimer > 0) {
         this.getReadyTimer--;

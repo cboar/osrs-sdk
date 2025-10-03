@@ -1,3 +1,5 @@
+const ALL_ASSETS = new Set<string>();
+
 export class Assets {
   static assetCount = 0;
   static loadingAssetUrls = [];
@@ -9,9 +11,7 @@ export class Assets {
    * Returns the appropriate URL for an asset and also schedules it for preloading.
    */
   static getAssetUrl(asset: string) {
-    // TODO switch CDN based on build variable 
-    const url = `https://assets-soltrainer.netlify.app/${asset}`;
-    //const url = `https://oldschool-cdn.com/${asset}`;
+    const url = `http://localhost:8000/${asset}`;
     if (Assets.loadedAssets[url]) {
       return url;
     }

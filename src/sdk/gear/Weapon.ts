@@ -44,6 +44,7 @@ export class Weapon extends Equipment {
   damage: number;
   damageRoll: number;
   lastHitHit = false;
+  alwaysHitMax = false;
   override selected = false;
   override inventorySprite: HTMLImageElement = ImageLoader.createImage(this.inventoryImage);
 
@@ -192,11 +193,13 @@ export class Weapon extends Equipment {
 
   _rollAttack(from: Unit, to: Unit, bonuses: AttackBonuses) {
     this.lastHitHit = false;
-    return Random.get() > this._hitChance(from, to, bonuses) ? 0 : this._calculateHitDamage(from, to, bonuses);
+    const didHit = this.alwaysHitMax || Random.get() < this._hitChance(from, to, bonuses);
+    return didHit ? this._calculateHitDamage(from, to, bonuses) : 0;
   }
 
   _calculateHitDamage(from: Unit, to: Unit, bonuses: AttackBonuses) {
     this.lastHitHit = true;
+    if (this.alwaysHitMax) return Math.floor(this._maxHit(from, to, bonuses));
     return Math.floor(Random.get() * (this._maxHit(from, to, bonuses) + 1));
   }
 

@@ -94,7 +94,8 @@ export class ClickController {
     if (this.viewport.components.some((component) => component.onMouseMove(e.offsetX / scale, e.offsetY / scale))) {
       return;
     }
-    const world = Trainer.player.region.world;
+    const region = Trainer.player.region;
+    const world = region.world;
     const hoveredOn = Viewport.viewport.translateClick(e.offsetX, e.offsetY, world);
     Viewport.viewport.contextMenu.tooltip = null;
     this.recentlySelectedMobs.forEach((mob) => {
@@ -102,12 +103,13 @@ export class ClickController {
     });
     this.recentlySelectedMobs = [];
     if (hoveredOn && hoveredOn.type === "entities") {
-      const firstMob = hoveredOn.mobs.find(() => true);
+      const firstMob = hoveredOn.mobs.find((mob) => !mob.isDying());
       if (firstMob) {
         firstMob.selected = true;
-        const region = Trainer.player.region;
         const actionText = firstMob.contextActions(region, 0, 0)[0].text;
-        Viewport.viewport.contextMenu.tooltip = { text: actionText, x: e.clientX, y: e.clientY };
+        if (world.getReadyTimer <= 0) {
+          Viewport.viewport.contextMenu.tooltip = { text: actionText, x: e.clientX, y: e.clientY };
+        }
         this.recentlySelectedMobs.push(firstMob);
       }
     }
@@ -179,13 +181,13 @@ export class ClickController {
     }
 
     const { mobs, players, groundItems, x, y } = clickedOn;
-
     Trainer.player.interruptCombat();
+    const targetMob = mobs.find(mob => mob.canBeAttacked());
 
     const inputController = InputController.controller;
-    if (!e.shiftKey && mobs.length && mobs[0].canBeAttacked()) {
+    if (!e.shiftKey && targetMob) {
       this.redClick();
-      inputController.queueAction(() => this.playerAttackClick(mobs[0]));
+      inputController.queueAction(() => this.playerAttackClick(targetMob));
     } else if (!e.shiftKey && players.length) {
       this.redClick();
       inputController.queueAction(() => this.playerAttackClick(players[0]));
