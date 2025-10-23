@@ -95,6 +95,7 @@ export abstract class Unit extends Renderable {
   aggro?: Unit;
   perceivedLocation: Location;
   attackDelay = 0;
+  attackDelayStart = 0;
   lastHitAgo = Number.MAX_SAFE_INTEGER;
   hasLOS = false;
   frozen = 0;
@@ -251,6 +252,7 @@ export abstract class Unit extends Renderable {
   // called when the unit has attacked
   didAttack() {
     this.attackDelay = this.attackSpeed;
+    this.attackDelayStart = this.attackSpeed;
     this.playAttackAnimation();
   }
 
@@ -723,13 +725,29 @@ export abstract class Unit extends Renderable {
     if (this.lastHitAgo > 12) {
       return;
     }
+    const hpSize = this.size * 1.75;
     context.fillStyle = "red";
-    context.fillRect((-this.size / 2) * scale, -(this.size / 2) * scale, scale * this.size, 5);
+    context.fillRect((-hpSize / 2) * scale, -(hpSize / 2) * scale, scale * hpSize, 8);
 
     const healthRatio = Math.min(1, Math.ceil((this.currentStats.hitpoint / this.stats.hitpoint) * this.healthScale) / this.healthScale);
     context.fillStyle = "lime";
-    const w = healthRatio * (scale * this.size);
-    context.fillRect((-this.size / 2) * scale, (-this.size / 2) * scale, w, 5);
+    const w = healthRatio * (scale * hpSize);
+    context.fillRect((-hpSize / 2) * scale, (-hpSize / 2) * scale, w, 8);
+  }
+
+  drawAttackBar(context: OffscreenCanvasRenderingContext2D, scale: number) {
+    if (this.attackDelay < 0) return;
+
+    const baseWidth = scale * this.size * 1.75;
+    const origin = -baseWidth / 2;
+    const yOffset = 20;
+
+    context.fillStyle = "black";
+    context.fillRect(origin, origin + yOffset, baseWidth, 8);
+
+    const ratio = Math.min(1, 1 - ((this.attackDelay - 1) / (this.attackDelayStart - 1)));
+    context.fillStyle = "orange";
+    context.fillRect(origin, origin + yOffset, baseWidth * ratio, 8);
   }
 
   drawHitsplats(context: OffscreenCanvasRenderingContext2D, scale: number, above: boolean) {
@@ -768,14 +786,15 @@ export abstract class Unit extends Renderable {
           image = this.healHitsplatImage;
         }
 
-        context.drawImage(image, projectile.offsetX - 12, verticalOffset - projectile.offsetY, 24, 23);
+        const splatSize = 48;
+        context.drawImage(image, projectile.offsetX - splatSize / 2, verticalOffset - projectile.offsetY, splatSize, splatSize);
         context.fillStyle = "#FFFFFF";
-        context.font = "16px Stats_11";
+        context.font = "32px Stats_11";
         context.textAlign = "center";
         context.fillText(
           String(Math.abs(projectile.damage)),
           projectile.offsetX,
-          verticalOffset - projectile.offsetY + 15,
+          verticalOffset - projectile.offsetY + 34,
         );
         context.textAlign = "left";
       }
@@ -786,12 +805,11 @@ export abstract class Unit extends Renderable {
     if (!this.prayerController) {
       return;
     }
-
     const overhead = this.prayerController.overhead();
     if (overhead) {
       const overheadImg = overhead.overheadImage();
       if (overheadImg) {
-        context.drawImage(overheadImg, -scale / 2, -scale * 3, scale, scale);
+        context.drawImage(overheadImg, -scale * 0.75, -scale * 4, scale * 1.5, scale * 1.5);
       }
     }
   }

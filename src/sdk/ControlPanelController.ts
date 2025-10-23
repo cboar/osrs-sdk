@@ -96,14 +96,19 @@ export class ControlPanelController {
 
     this.selectedControl = ControlPanelController.controls.PRAYER;
     document.addEventListener("keydown", (event) => {
+      if (event.key === "q") {
+        this.selectedControl = this.selectedControl === ControlPanelController.controls.PRAYER
+          ? ControlPanelController.controls.INVENTORY
+          : ControlPanelController.controls.PRAYER
+        event.preventDefault();
+        return;
+      }
       if (Settings.is_keybinding) {
         return;
       }
-
       if (this.isUsingExternalUI) {
         return;
       }
-
       this.controls.forEach((control) => {
         if (control.keyBinding === event.key) {
           this.selectedControl = control;

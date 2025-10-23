@@ -325,10 +325,10 @@ export class GLTFModel implements Model, RenderableListener {
     }
 
     const { x, y, z } = location;
-     this.outline.position.x = x;
-     this.outline.position.y = -0.49;
-     this.outline.position.z = y;
-     this.outline.visible = this.renderable.drawOutline && visible;
+    this.outline.position.x = x;
+    this.outline.position.y = -0.49;
+    this.outline.position.z = y;
+    this.outline.visible = this.renderable.drawOutline && visible;
     if (this.renderable.drawTrueTile) {
       const { x: trueX, y: trueY } = this.renderable.getTrueLocation();
       if (this.renderable.drawTrueTile !== (this.trueTile.material as THREE.Material).blendColor.getHexString()) {
@@ -411,6 +411,7 @@ export class GLTFModel implements Model, RenderableListener {
     const scene = new THREE.Scene();
     const gltf = await loader.loadAsync(model);
     const camera = new THREE.PerspectiveCamera();
+    gltf.scene.visible = true;
     gltf.scene.scale.set(0.01, 0.01, 0.01);
     gltf.scene.position.set(20, 0, 20);
 

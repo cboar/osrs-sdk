@@ -1,5 +1,3 @@
-const ALL_ASSETS = new Set<string>();
-
 export class Assets {
   static assetCount = 0;
   static loadingAssetUrls = [];

@@ -200,7 +200,7 @@ export abstract class Region {
     Viewport.viewport.reset();
     
     // Set countdown timer like on page load
-    this.world.getReadyTimer = 6;
+    this.world.getReadyTimer = Math.floor(3000 / Settings.tickMs);
     
     const reset = this.initialiseRegion();
     Viewport.viewport.setPlayer(reset.player);

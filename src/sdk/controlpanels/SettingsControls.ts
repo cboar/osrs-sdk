@@ -153,7 +153,9 @@ export class SettingsControls extends BaseControls {
 
     document.addEventListener("keydown", (event) => {
       const key = event.key;
-      if (key.startsWith("F")) event.preventDefault();
+      if (key.startsWith("F")) {
+        event.preventDefault();
+      }
       if (this.bindingKey) {
         event.preventDefault();
         if (this.bindingKey === "inventory") {

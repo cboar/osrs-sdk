@@ -965,13 +965,13 @@ export class Player extends Unit {
       return;
     }
     context.save();
-
     context.translate(offset.x, offset.y);
 
     if (Settings.rotated === "south") {
       this.region.context.rotate(Math.PI);
     }
     this.drawHPBar(context, scale);
+    this.drawAttackBar(context, scale);
     this.drawHitsplats(context, scale, hitsplatsAbove);
     this.drawOverheadPrayers(context, scale);
     context.restore();

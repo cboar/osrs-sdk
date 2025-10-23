@@ -49,7 +49,7 @@ export class ClickAnimation {
     }
     const frameNumber = Math.floor((1 - this.ttl) * 4);
     const frames = this.color === "red" ? ClickAnimation.frames.red : ClickAnimation.frames.yellow;
-    context.drawImage(frames[frameNumber], this.x - 9, this.y - 9);
+    context.drawImage(frames[frameNumber], this.x - 16, this.y - 16, 32, 32);
 
     this.ttl -= 1.65 / Settings.fps;
   }
